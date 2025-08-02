@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Cutter - Split Your PDFs Easily</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-cut"></i>
+                <h1>PDF Cutter</h1>
+            </div>
+            <p class="subtitle">Split your PDF files with precision and ease</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Upload Your PDF</h3>
+                    <p>Drag and drop your PDF file here or click the button below</p>
+                    <input type="file" id="fileInput" accept=".pdf" hidden>
+                    <button class="upload-btn" id="chooseFileBtn">
+                        Choose File
+                    </button>
+                </div>
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <div class="file-details">
+                        <i class="fas fa-file-pdf"></i>
+                        <div class="file-text">
+                            <h4 id="fileName"></h4>
+                            <p id="fileSize"></p>
+                        </div>
+                        <button class="remove-file" id="removeFile">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PDF Preview and Controls -->
+            <section class="pdf-section" id="pdfSection" style="display: none;">
+                <div class="pdf-controls">
+                    <h3>PDF Controls</h3>
+                    <div class="controls-grid">
+                        <div class="control-group">
+                            <label for="pageCount">Total Pages:</label>
+                            <span id="pageCount" class="page-info">0</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="startPage">Start Page:</label>
+                            <input type="number" id="startPage" min="1" value="1" class="page-input">
+                        </div>
+                        <div class="control-group">
+                            <label for="endPage">End Page:</label>
+                            <input type="number" id="endPage" min="1" value="1" class="page-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pdf-preview">
+                    <h3>PDF Preview</h3>
+                    <div class="preview-container">
+                        <canvas id="pdfCanvas"></canvas>
+                        <div class="preview-controls">
+                            <button id="prevPage" class="nav-btn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="currentPageDisplay">Page 1 of 1</span>
+                            <button id="nextPage" class="nav-btn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="split-options">
+                    <h3>Split Options</h3>
+                    <div class="options-grid">
+                        <div class="option-card">
+                            <input type="radio" id="rangeOption" name="splitOption" value="range" checked>
+                            <label for="rangeOption" class="option-label">
+                                <i class="fas fa-list-ol"></i>
+                                <span>Page Range</span>
+                                <p>Extract specific page range</p>
+                            </label>
+                        </div>
+                        <div class="option-card">
+                            <input type="radio" id="singleOption" name="splitOption" value="single">
+                            <label for="singleOption" class="option-label">
+                                <i class="fas fa-file"></i>
+                                <span>Single Pages</span>
+                                <p>Split into individual pages</p>
+                            </label>
+                        </div>
+                        <div class="option-card">
+                            <input type="radio" id="customOption" name="splitOption" value="custom">
+                            <label for="customOption" class="option-label">
+                                <i class="fas fa-cogs"></i>
+                                <span>Custom Split</span>
+                                <p>Define custom page ranges</p>
+                            </label>
+                        </div>
+                        <div class="option-card">
+                            <input type="radio" id="reorderOption" name="splitOption" value="reorder">
+                            <label for="reorderOption" class="option-label">
+                                <i class="fas fa-arrows-alt"></i>
+                                <span>Reorder Pages</span>
+                                <p>Visually rearrange page order</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="custom-ranges" id="customRanges" style="display: none;">
+                    <h4>Custom Page Ranges</h4>
+                    <div class="ranges-container" id="rangesContainer">
+                        <div class="range-input">
+                            <input type="text" placeholder="e.g., 1-5, 8, 10-12" class="range-text">
+                            <button class="remove-range">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="add-range" id="addRange">
+                        <i class="fas fa-plus"></i>
+                        Add Range
+                    </button>
+                </div>
+
+                <div class="reorder-section" id="reorderSection" style="display: none;">
+                    <h4>Reorder Pages</h4>
+                    <p class="reorder-hint">Drag and drop the page thumbnails to rearrange the order</p>
+                    <div class="pages-grid" id="pagesGrid">
+                        <!-- Page thumbnails will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-secondary" id="resetBtn">
+                        <i class="fas fa-undo"></i>
+                        Reset
+                    </button>
+                    <button class="btn-primary" id="splitBtn">
+                        <i class="fas fa-cut"></i>
+                        Split PDF
+                    </button>
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section class="progress-section" id="progressSection" style="display: none;">
+                <div class="progress-container">
+                    <h3>Processing PDF...</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">Preparing...</p>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <h3>Download Results</h3>
+                <div class="results-container" id="resultsContainer">
+                    <!-- Download links will be populated here -->
+                </div>
+                <button class="btn-secondary" id="startOverBtn">
+                    <i class="fas fa-refresh"></i>
+                    Start Over
+                </button>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 PDF Cutter. Built with ❤️ for easy PDF manipulation.</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading PDF.js...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
